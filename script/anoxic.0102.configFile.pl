@@ -1,0 +1,64 @@
+#!/usr/bin/env perl
+
+use Modern::Perl '2015';
+use autodie;
+
+my $cores = 24;
+my $dir        = "/export2/home/uesu/anoxic/data/combined/DNA";
+my $cleaned    = "/export2/home/uesu/anoxic/data/trimmed/DNA/";
+my $configFile = "out/anoxic.0102.DNA.config";
+
+my $config = <<'END';
+[adapters]
+i7:AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC*ATCTCGTATGCCGTCTTCTGCTTG
+i5:AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
+
+[tag sequences]
+Sample01:ATCACG
+Sample02:ACTGAT
+Sample05:CGATGT
+Sample06:ATTCCT
+Sample09:ATCACG
+Sample10:TTAGGC
+Sample13:TGACCA
+Sample14:ACAGTG
+Sample17:CGATGT
+Sample18:TTAGGC
+Sample21:TGACCA
+Sample22:ACAGTG
+
+[tag map]
+UPNAN100812S001C_ATCACG:Sample01
+UPNAE100812S002C_ACTGAT:Sample02
+UPNAN130812S005C_CGATGT:Sample05
+UPNAE130812S006C_ATTCCT:Sample06
+UPNAN140812S009C_ATCACG:Sample09
+UPNAE140812S010C_TTAGGC:Sample10
+UPNAN150812S013C_TGACCA:Sample13
+UPNAE150812S014C_ACAGTG:Sample14
+UPNAN160812S017C_CGATGT:Sample17
+UPNAE160812S018C_TTAGGC:Sample18
+UPNAN170812S021C_TGACCA:Sample21
+UPNAE170812S022C_ACAGTG:Sample22
+
+[names]
+UPNAN100812S001C_ATCACG:Day1_ANOX_Sample01
+UPNAE100812S002C_ACTGAT:Day1_AERO_Sample02
+UPNAE130812S006C_ATTCCT:Day2_AERO_Sample06
+UPNAN130812S005C_CGATGT:Day2_ANOX_Sample05
+UPNAN140812S009C_ATCACG:Day3_ANOX_Sample09
+UPNAE140812S010C_TTAGGC:Day3_AERO_Sample10
+UPNAN150812S013C_TGACCA:Day4_ANOX_Sample13
+UPNAE150812S014C_ACAGTG:Day4_AERO_Sample14
+UPNAN160812S017C_CGATGT:Day5_ANOX_Sample17
+UPNAE160812S018C_TTAGGC:Day5_AERO_Sample18
+UPNAN170812S021C_TGACCA:Day6_ANOX_Sample21
+UPNAE170812S022C_ACAGTG:Day6_AERO_Sample22
+END
+
+
+open my $outputConfig, ">", $configFile ;
+print $outputConfig $config;
+
+print "psub $cores -N trimDNA ";
+say "/export2/home/uesu/local/anaconda/bin/illumiprocessor --input $dir --output $cleaned --config $configFile --cores 24 --trimmomatic /export2/home/uesu/local/anaconda/jar/trimmomatic.jar" 
